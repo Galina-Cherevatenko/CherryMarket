@@ -1,0 +1,16 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:mem:demo1;DB_CLOSE_DELAY=-1;
+    username:
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show-sql: true
+        format_sql: true
