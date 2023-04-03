@@ -1,4 +1,4 @@
-package com.example.cherrymarket1.models;
+package com.example.cherrymarket1.entities;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -37,25 +37,41 @@ public class Person {
     @Email
     private String email;
 
+    @Column(name="password")
+    private String password;
+    @Column(name="role")
+    private String role;
     @OneToMany(mappedBy = "owner")
     private List<Order> orders;
 
-    public Person(int id, String name, String address, String phone, String email) {
+    public Person(int id, String name, String address, String phone, String email, String password, String role) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
-    public Person(String name, String address, String phone, String email) {
+    public Person(String name, String address, String phone, String email, String password, String role) {
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.password = password;
+        this.role = role;
     }
 
     public Person() {
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getId() {
@@ -111,6 +127,14 @@ public class Person {
             this.orders = new ArrayList<>();
         this.orders.add(order);
         order.setOwner(this);
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

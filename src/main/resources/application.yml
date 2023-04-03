@@ -1,9 +1,11 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   liquibase:
     enabled: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/market9
+    url: jdbc:postgresql://localhost:5432/market14
     username: postgres
     password: postgres
   jpa:

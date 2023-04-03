@@ -1,6 +1,8 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.*;
+import com.example.cherrymarket1.entities.Order;
+import com.example.cherrymarket1.entities.Person;
+import com.example.cherrymarket1.entities.Status;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,8 +33,8 @@ public class OrderRepositoryTest {
     @Test
     public void testSavingRoundTrip(){
         // given
-        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "123456789123",
-                "sdsf@sd.ru"));;
+        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN"));
         Order order = new Order (new ArrayList<>(), 0, Status.BASKET, person1);
 
         // when
@@ -46,10 +48,10 @@ public class OrderRepositoryTest {
     @Test
     public void findByOwner() {
         // given
-        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "123456789123",
-                "sdsf@sd.ru"));
-        Person person2 = entityManager.persist(new Person("Daria", "Moscow", "145656789123",
-                "sryf@sd.ru"));
+        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN"));
+        Person person2 = entityManager.persist(new Person("Daria", "Moscow", "126444789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN"));
         Order order1 = orderRepository.save(new Order (new ArrayList<>(), 0, Status.BASKET, person1));
         Order order2 = orderRepository.save(new Order(new ArrayList<>(), 0, Status.BASKET, person1));
         Order order3 = orderRepository.save(new Order(new ArrayList<>(), 0, Status.BASKET, person2));

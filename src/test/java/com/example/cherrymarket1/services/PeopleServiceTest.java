@@ -1,10 +1,11 @@
 package com.example.cherrymarket1.services;
 
 
-import com.example.cherrymarket1.models.Person;
+import com.example.cherrymarket1.entities.Person;
 import com.example.cherrymarket1.repositories.PeopleRepository;
 
-import com.example.cherrymarket1.util.PersonNotFoundException;
+import com.example.cherrymarket1.exceptions.PersonNotFoundException;
+
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -30,12 +32,12 @@ public class PeopleServiceTest {
     @MockBean
     private PeopleRepository peopleRepository;
 
-    Person person1 = new Person(1,"Fedor", "Moscow", "123456789123",
-            "sdsf@sd.ru");
-    Person person2 = new Person(2,"Daria", "Moscow", "145656789123",
-            "sryf@sd.ru");
+    Person person1 =new Person(1,"Fedor", "Moscow", "126666789123",
+            "sdsf@sd.ru", "test", "ROLE_ADMIN");
+    Person person2 = new Person(2,"Daria", "Moscow", "126444789123",
+            "sdsf@sd.ru", "test", "ROLE_ADMIN");
     Person person3 = new Person(3, "Maria", "Moscow", "198756789123",
-            "sryf@sd.ru");
+            "sdsf@sd.ru", "test", "ROLE_USER");
     @Test
     public void save() {
 
@@ -75,7 +77,7 @@ public class PeopleServiceTest {
     public void findByPhone() {
         when(peopleRepository.findByPhone(person1.getPhone())).thenReturn(Optional.of(person1));
 
-        Optional<Person> foundPerson = peopleService.findByPhone("123456789123");
+        Optional<Person> foundPerson = peopleService.findByPhone("126666789123");
         Person result = foundPerson.orElseThrow(PersonNotFoundException::new);
 
         assertNotNull(result);
@@ -84,9 +86,10 @@ public class PeopleServiceTest {
 
     @Test
     public void update() {
-        Person personNew = new Person("NewName", "Moscow", "123456789123", "sdsf@sd.ru");
+        Person personNew = new Person("NewName", "Moscow", "123456789123",
+                "sdsf@sd.ru", "test", "ROLE_USER");
         Person updatedPerson = new Person(1, "NewName", "Moscow", "123456789123",
-                "sdsf@sd.ru");
+                "sdsf@sd.ru", "test", "ROLE_USER");
 
         when(peopleRepository.save(updatedPerson)).thenReturn(updatedPerson);
 

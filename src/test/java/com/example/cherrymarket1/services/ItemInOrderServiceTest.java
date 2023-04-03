@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.services;
 
-import com.example.cherrymarket1.models.*;
+import com.example.cherrymarket1.entities.*;
 import com.example.cherrymarket1.repositories.ItemInOrderRepository;
 
 import org.junit.Test;
@@ -28,8 +28,8 @@ public class ItemInOrderServiceTest {
     @MockBean
     private OrderService orderService;
 
-    Person person1 = new Person(1, "Fedor", "Moscow", "123456789123",
-            "sdsf@sd.ru");
+    Person person1 = new Person(1, "Fedor", "Moscow", "126666789123",
+            "sdsf@sd.ru", "test", "ROLE_ADMIN");
     Category category = (new Category(1, "Food"));
     Item item1 = new Item(1, "Cake", 10, 5,category);
     Item item2 = new Item(2,"Lemon", 5, 10,category);

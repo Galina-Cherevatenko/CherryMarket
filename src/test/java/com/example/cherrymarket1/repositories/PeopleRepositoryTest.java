@@ -1,7 +1,7 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.Person;
-import com.example.cherrymarket1.util.PersonNotFoundException;
+import com.example.cherrymarket1.entities.Person;
+import com.example.cherrymarket1.exceptions.PersonNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,8 @@ public class PeopleRepositoryTest {
     @Test
     public void testSavingRoundTrip(){
         // given
-        Person person = new Person("SomeName", "Moscow", "123456789123", "sdsf@sd.ru");
+        Person person = new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN");
 
         // when
         Person result = peopleRepository.save(person);
@@ -35,14 +36,14 @@ public class PeopleRepositoryTest {
     @Test
     public void findByPhone() {
         // given
-        Person person1 = peopleRepository.save(new Person("Fedor", "Moscow", "123456789123",
-                "sdsf@sd.ru"));
-        Person person2 = peopleRepository.save(new Person("Daria", "Moscow", "145656789123",
-                "sryf@sd.ru"));
+        Person person1 = peopleRepository.save(new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_USER"));
+        Person person2 = peopleRepository.save(new Person("Daria", "Moscow", "126444789123",
+                "sdsf@sd.ru", "test", "ROLE_USER"));
         Person person3 = peopleRepository.save(new Person("Maria", "Moscow", "198756789123",
-                "sryf@sd.ru"));
+                "sdsf@sd.ru", "test", "ROLE_USER"));
         // when
-        Person result = peopleRepository.findByPhone("145656789123").orElseThrow(PersonNotFoundException::new);
+        Person result = peopleRepository.findByPhone("126444789123").orElseThrow(PersonNotFoundException::new);
 
         // then
         assertNotNull(result);

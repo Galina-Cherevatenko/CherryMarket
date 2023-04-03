@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.*;
+import com.example.cherrymarket1.entities.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,8 @@ public class ItemInOrderRepositoryTest {
 
     @Test
     public void findByOrder() {
-        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "123456789123",
-                "sdsf@sd.ru"));
+        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN"));
         Category category = entityManager.persist(new Category("Food"));
         Item item1 = entityManager.persist(new Item("Cake", 10, 5,category));
         Item item2 = entityManager.persist(new Item("Lemon", 5, 10,category));

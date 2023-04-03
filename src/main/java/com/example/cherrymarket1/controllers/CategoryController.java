@@ -1,13 +1,14 @@
 package com.example.cherrymarket1.controllers;
 
 import com.example.cherrymarket1.dto.CategoryDTO;
-import com.example.cherrymarket1.models.Category;
+import com.example.cherrymarket1.entities.Category;
+import com.example.cherrymarket1.exceptions.CategoryNotCreatedException;
 import com.example.cherrymarket1.services.CategoryService;
 import com.example.cherrymarket1.util.*;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -19,19 +20,18 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
     private final CategoryService categoryService;
-    private final ModelMapper modelMapper;
     private final CategoryValidator categoryValidator;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, ModelMapper modelMapper, CategoryValidator categoryValidator) {
+    public CategoryController(CategoryService categoryService,  CategoryValidator categoryValidator) {
         this.categoryService = categoryService;
-        this.modelMapper = modelMapper;
         this.categoryValidator = categoryValidator;
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Category create(@RequestBody @Valid CategoryDTO categoryDTO, BindingResult bindingResult) {
-        Category category = convertToCategory(categoryDTO);
+        Category category = new Category(categoryDTO.getName());
         categoryValidator.validate(category, bindingResult);
         if (bindingResult.hasErrors())
         {
@@ -52,16 +52,11 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id) {
         categoryService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    private Category convertToCategory(CategoryDTO categoryDTO){
-        return modelMapper.map(categoryDTO, Category.class);
-    }
-    private CategoryDTO convertToCategoryDTO(Category category){
-        return modelMapper.map(category, CategoryDTO.class);
-    }
 }
 

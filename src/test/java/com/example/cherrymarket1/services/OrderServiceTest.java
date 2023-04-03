@@ -1,15 +1,19 @@
 package com.example.cherrymarket1.services;
 
-import com.example.cherrymarket1.models.*;
+import com.example.cherrymarket1.entities.*;
 import com.example.cherrymarket1.repositories.ItemInOrderRepository;
 import com.example.cherrymarket1.repositories.ItemRepository;
 import com.example.cherrymarket1.repositories.OrderRepository;
 
+
+import com.example.cherrymarket1.util.CustomResponse;
+import com.example.cherrymarket1.util.CustomStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -38,10 +42,10 @@ public class OrderServiceTest {
     @MockBean
     private PeopleService peopleService;
 
-    Person person1 =new Person(1,"Fedor", "Moscow", "123456789123",
-            "sdsf@sd.ru");
-    Person person2 = new Person(2,"Daria", "Moscow", "145656789123",
-            "sryf@sd.ru");
+    Person person1 =new Person(1,"Fedor", "Moscow", "126666789123",
+            "sdsf@sd.ru", "test", "ROLE_ADMIN");
+    Person person2 = new Person(2,"Daria", "Moscow", "126444789123",
+            "sdsf@sd.ru", "test", "ROLE_ADMIN");
     Order order1 = new Order (1, new ArrayList<>(), 0, Status.BASKET, person1);
     Order order2 = new Order (2, new ArrayList<>(), 0, Status.CREATED, person1);
     Order order3 = new Order (3, new ArrayList<>(), 0, Status.BASKET, person2);
@@ -75,15 +79,16 @@ public class OrderServiceTest {
         assertEquals(orders.get(0),resultList.get(0));
     }
 
-    @Test
+   @Test
     public void addItemToOrder() {
         when(itemRepository.findById(item1.getId())).thenReturn(Optional.of(item1));
         when(orderRepository.findById(order1.getId())).thenReturn(Optional.of(order1));
         when(itemInOrderRepository.save(itemInOrder1)).thenReturn(itemInOrder1);
+        CustomResponse successResponse = new CustomResponse(CustomStatus.SUCCESS);
 
-        Boolean result = orderService.addItemToOrder(order1.getId(), item1.getId(),2);
+        CustomResponse result = orderService.addItemToOrder(order1.getId(), item1.getId(),2);
 
-        assertTrue(result);
+        assertEquals(successResponse.getMessage(),result.getMessage());
 
     }
 

@@ -1,18 +1,18 @@
 package com.example.cherrymarket1.services;
 
-import com.example.cherrymarket1.models.Delivery;
-import com.example.cherrymarket1.models.Order;
-import com.example.cherrymarket1.models.Status;
+import com.example.cherrymarket1.entities.Delivery;
+import com.example.cherrymarket1.entities.Order;
+import com.example.cherrymarket1.entities.Status;
 import com.example.cherrymarket1.repositories.DeliveryRepository;
 import com.example.cherrymarket1.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
-@Transactional(readOnly = true)
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final OrderService orderService;

@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.util;
 
-import com.example.cherrymarket1.models.Category;
+import com.example.cherrymarket1.entities.Category;
 
 import com.example.cherrymarket1.repositories.CategoryRepository;
 

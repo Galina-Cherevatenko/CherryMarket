@@ -1,4 +1,4 @@
-package com.example.cherrymarket1.models;
+package com.example.cherrymarket1.entities;
 
 public enum Status {
     BASKET("корзина"),

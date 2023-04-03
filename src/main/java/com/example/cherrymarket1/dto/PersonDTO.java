@@ -25,14 +25,18 @@ public class PersonDTO {
     @Email
     private String email;
 
+    @NotEmpty(message = "Password should not be empty")
+    private String password;
+
     public PersonDTO() {
     }
 
-    public PersonDTO(String name, String address, String phone, String email) {
+    public PersonDTO(String name, String address, String phone, String email, String password) {
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.email = email;
+        this.password = password;
     }
 
     public String getName() {
@@ -65,5 +69,13 @@ public class PersonDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

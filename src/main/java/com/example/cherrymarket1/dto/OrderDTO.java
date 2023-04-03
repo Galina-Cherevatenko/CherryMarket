@@ -2,7 +2,7 @@ package com.example.cherrymarket1.dto;
 
 
 
-import com.example.cherrymarket1.models.Status;
+import com.example.cherrymarket1.entities.Status;
 
 
 

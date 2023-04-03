@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.dto;
 
-import com.example.cherrymarket1.models.Order;
+import com.example.cherrymarket1.entities.Order;
 
 
 import java.time.LocalDateTime;

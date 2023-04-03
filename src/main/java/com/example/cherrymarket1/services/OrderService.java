@@ -1,12 +1,15 @@
 package com.example.cherrymarket1.services;
 
-import com.example.cherrymarket1.models.*;
+import com.example.cherrymarket1.entities.*;
 import com.example.cherrymarket1.repositories.ItemInOrderRepository;
 import com.example.cherrymarket1.repositories.ItemRepository;
 import com.example.cherrymarket1.repositories.OrderRepository;
-import com.example.cherrymarket1.util.ItemNotFoundException;
-import com.example.cherrymarket1.util.OrderNotFoundException;
+import com.example.cherrymarket1.exceptions.ItemNotFoundException;
+import com.example.cherrymarket1.exceptions.OrderNotFoundException;
+import com.example.cherrymarket1.util.CustomResponse;
+import com.example.cherrymarket1.util.CustomStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
-@Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
@@ -33,7 +36,7 @@ public class OrderService {
         this.itemService = itemService;
         this.peopleService = peopleService;
     }
-    @Transactional
+
     public void save(Order order){
         orderRepository.save(order);
     }
@@ -47,24 +50,28 @@ public class OrderService {
         List<Order> personOrders = orderRepository.findByOwner(peopleService.findOne(person_id));
         return personOrders;
     }
+
     public List<Order> findAll() {
         return orderRepository.findAll();
     }
 
     @Transactional
-    public boolean addItemToOrder(int order_id, int item_id, int quantity){
+    public CustomResponse addItemToOrder(int order_id, int item_id, int quantity){
         Optional <Item> foundItem = itemRepository.findById(item_id);
         Item item = foundItem.orElseThrow(ItemNotFoundException::new);
-        Optional <Order> foundOrder = orderRepository.findById(order_id);
-        Order order = foundOrder.orElseThrow(OrderNotFoundException::new);
-        ItemInOrder itemInOrder = new ItemInOrder();
-        itemInOrder.setOrder(order);
-        itemInOrder.setItem(item);
-        itemInOrder.setQuantity(quantity);
-        item.setItemQuantity(item.getItemQuantity()- quantity);
-        itemInOrderRepository.save(itemInOrder);
-        setPriceToOrder(order);
-        return true;
+        if (item.getItemQuantity()>=quantity){
+            Optional <Order> foundOrder = orderRepository.findById(order_id);
+            Order order = foundOrder.orElseThrow(OrderNotFoundException::new);
+            ItemInOrder itemInOrder = new ItemInOrder();
+            itemInOrder.setOrder(order);
+            itemInOrder.setItem(item);
+            itemInOrder.setQuantity(quantity);
+            item.setItemQuantity(item.getItemQuantity()- quantity);
+            itemInOrder = itemInOrderRepository.save(itemInOrder);
+            setPriceToOrder(order);
+            return new CustomResponse(CustomStatus.SUCCESS);
+        }
+       return new CustomResponse(CustomStatus.EXCEPTION);
     }
 
     @Transactional
@@ -84,7 +91,6 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    @Transactional
     public void update (int id, Order updatedOrder){
         updatedOrder.setId(id);
         setPriceToOrder(updatedOrder);

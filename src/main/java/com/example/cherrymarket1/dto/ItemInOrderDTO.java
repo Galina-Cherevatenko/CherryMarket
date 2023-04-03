@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.dto;
 
-import com.example.cherrymarket1.models.Item;
+import com.example.cherrymarket1.entities.Item;
 
 
 public class ItemInOrderDTO {

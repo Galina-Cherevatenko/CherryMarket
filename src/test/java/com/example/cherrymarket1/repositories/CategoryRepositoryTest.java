@@ -1,8 +1,8 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.Category;
+import com.example.cherrymarket1.entities.Category;
 
-import com.example.cherrymarket1.util.CategoryNotFoundException;
+import com.example.cherrymarket1.exceptions.CategoryNotFoundException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

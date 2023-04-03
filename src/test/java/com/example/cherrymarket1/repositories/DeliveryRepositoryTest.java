@@ -1,9 +1,9 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.Delivery;
-import com.example.cherrymarket1.models.Order;
-import com.example.cherrymarket1.models.Person;
-import com.example.cherrymarket1.models.Status;
+import com.example.cherrymarket1.entities.Delivery;
+import com.example.cherrymarket1.entities.Order;
+import com.example.cherrymarket1.entities.Person;
+import com.example.cherrymarket1.entities.Status;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +33,8 @@ public class DeliveryRepositoryTest {
     @Test
     public void findByOrder() {
 
-        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "123456789123",
-                "sdsf@sd.ru"));
+        Person person1 = entityManager.persist(new Person("Fedor", "Moscow", "126666789123",
+                "sdsf@sd.ru", "test", "ROLE_ADMIN"));
         Order order1 = entityManager.persist(new Order (new ArrayList<>(), 0, Status.BASKET, person1));
         Delivery delivery1 = deliveryRepository.save(new Delivery(order1, LocalDateTime.now(), LocalDateTime.now()));
 

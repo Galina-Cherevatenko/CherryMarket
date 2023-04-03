@@ -3,7 +3,7 @@ package com.example.cherrymarket1.util;
 
 
 
-import com.example.cherrymarket1.models.Person;
+import com.example.cherrymarket1.entities.Person;
 import com.example.cherrymarket1.services.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +29,8 @@ public class PersonValidator implements Validator {
         Person person = (Person) o;
         if (peopleService.findByPhone(person.getPhone()).isPresent())
             errors.rejectValue("phone", "", "Такой телефон уже существует");
+        if (peopleService.findByName(person.getName()).isPresent())
+            errors.rejectValue("name", "", "Пользователь с таким именем уже существует");
 
     }
 }

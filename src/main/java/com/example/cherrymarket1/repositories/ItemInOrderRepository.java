@@ -1,7 +1,7 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.ItemInOrder;
-import com.example.cherrymarket1.models.Order;
+import com.example.cherrymarket1.entities.ItemInOrder;
+import com.example.cherrymarket1.entities.Order;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

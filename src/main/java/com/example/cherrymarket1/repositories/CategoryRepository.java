@@ -1,6 +1,6 @@
 package com.example.cherrymarket1.repositories;
 
-import com.example.cherrymarket1.models.Category;
+import com.example.cherrymarket1.entities.Category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

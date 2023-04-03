@@ -1,9 +1,10 @@
 package com.example.cherrymarket1.services;
 
-import com.example.cherrymarket1.models.Category;
-import com.example.cherrymarket1.models.Item;
+import com.example.cherrymarket1.entities.Category;
+import com.example.cherrymarket1.entities.Item;
 
 import com.example.cherrymarket1.repositories.ItemRepository;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

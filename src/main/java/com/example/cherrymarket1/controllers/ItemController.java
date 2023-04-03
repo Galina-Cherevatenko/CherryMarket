@@ -2,15 +2,16 @@ package com.example.cherrymarket1.controllers;
 
 import com.example.cherrymarket1.dto.ItemDTO;
 
-import com.example.cherrymarket1.models.Item;
-
+import com.example.cherrymarket1.exceptions.ItemNotCreatedException;
+import com.example.cherrymarket1.exceptions.ItemNotFoundException;
+import com.example.cherrymarket1.mappers.ItemMapper;
 import com.example.cherrymarket1.services.CategoryService;
 import com.example.cherrymarket1.services.ItemService;
 import com.example.cherrymarket1.util.*;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -24,21 +25,23 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
     private final CategoryService categoryService;
-    private final ModelMapper modelMapper;
+    private final ItemMapper itemMapper;
 
     @Autowired
-    public ItemController(ItemService itemService, CategoryService categoryService, ModelMapper modelMapper) {
+    public ItemController(ItemService itemService, CategoryService categoryService, ItemMapper itemMapper) {
         this.itemService = itemService;
         this.categoryService = categoryService;
-        this.modelMapper = modelMapper;
+        this.itemMapper = itemMapper;
     }
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<ItemDTO> getItems(){
-        return itemService.findAll().stream().map(this::convertToItemDTO).collect(Collectors.toList());
+        return itemService.findAll().stream().map(itemMapper::convertToItemDTO).collect(Collectors.toList());
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ItemDTO  getItem(@PathVariable("id") int id){
-        return convertToItemDTO(itemService.findOne(id));
+        return itemMapper.convertToItemDTO(itemService.findOne(id));
 
     }
     @ExceptionHandler
@@ -48,6 +51,7 @@ public class ItemController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid ItemDTO itemDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors())
@@ -59,7 +63,7 @@ public class ItemController {
             }
             throw new ItemNotCreatedException(errorMsg.toString());
         }
-        itemService.save(convertToItem(itemDTO));
+        itemService.save(itemMapper.convertToItem(itemDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @ExceptionHandler
@@ -69,6 +73,7 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ItemDTO update(@RequestBody @Valid ItemDTO itemDTO, BindingResult bindingResult,
                             @PathVariable("id") int id) {
 
@@ -82,24 +87,21 @@ public class ItemController {
             throw new ItemNotCreatedException(errorMsg.toString());
         }
 
-        itemService.update(id, convertToItem(itemDTO));
+        itemService.update(id, itemMapper.convertToItem(itemDTO));
         return itemDTO;
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id) {
 
         itemService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @GetMapping("/{id}/quantity")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public int getItemQuantity(@PathVariable("id") int id){
         return itemService.findOne(id).getItemQuantity();
     }
-   private Item convertToItem(ItemDTO itemDTO){
-       return modelMapper.map(itemDTO, Item.class);
-   }
-    private ItemDTO convertToItemDTO(Item item){
-        return modelMapper.map(item, ItemDTO.class);
-    }
+
 }

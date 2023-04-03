@@ -4,18 +4,20 @@ package com.example.cherrymarket1.controllers;
 
 import com.example.cherrymarket1.dto.PersonDTO;
 
-import com.example.cherrymarket1.models.Person;
+import com.example.cherrymarket1.entities.Person;
 
+import com.example.cherrymarket1.mappers.PersonMapper;
 import com.example.cherrymarket1.services.OrderService;
 import com.example.cherrymarket1.services.PeopleService;
 import com.example.cherrymarket1.util.PersonErrorResponse;
-import com.example.cherrymarket1.util.PersonNotCreatedException;
-import com.example.cherrymarket1.util.PersonNotFoundException;
+import com.example.cherrymarket1.exceptions.PersonNotCreatedException;
+import com.example.cherrymarket1.exceptions.PersonNotFoundException;
 import com.example.cherrymarket1.util.PersonValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -31,31 +33,34 @@ public class PeopleController {
 
     private final PeopleService peopleService;
     private final PersonValidator personValidator;
-    private final ModelMapper modelMapper;
+    private final PersonMapper personMapper;
     private final OrderService orderService;
 
     @Autowired
     public PeopleController(PeopleService peopleService, PersonValidator personValidator, OrderService orderService,
-                            ModelMapper modelMapper) {
+                            PersonMapper personMapper) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.orderService = orderService;
-        this.modelMapper = modelMapper;
+        this.personMapper = personMapper;
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PersonDTO> getPeople(){
-        return peopleService.findAll().stream().map(this::convertToPersonDTO).collect(Collectors.toList());
+        return peopleService.findAll().stream().map(personMapper::convertToPersonDTO).collect(Collectors.toList());
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PersonDTO  getPerson(@PathVariable("id") int id){
-        return convertToPersonDTO(peopleService.findOne(id));
+        return personMapper.convertToPersonDTO(peopleService.findOne(id));
 
     }
 
     @PostMapping()
-    public Person create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
-        Person person = convertToPerson(personDTO);
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public int create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
+        Person person = personMapper.convertToPerson(personDTO);
         personValidator.validate(person, bindingResult);
         if (bindingResult.hasErrors())
             {
@@ -66,8 +71,9 @@ public class PeopleController {
             }
             throw new PersonNotCreatedException(errorMsg.toString());
         }
+        Person createdPerson = peopleService.save(person);
 
-        return peopleService.save(person);
+        return createdPerson.getId();
     }
 
     @ExceptionHandler
@@ -83,7 +89,8 @@ public class PeopleController {
     }
 
     @PutMapping("/{id}")
-    public Person update(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<HttpStatus> update(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult,
                          @PathVariable("id") int id) {
 
         if (bindingResult.hasErrors())
@@ -95,27 +102,23 @@ public class PeopleController {
             }
             throw new PersonNotCreatedException(errorMsg.toString());
         }
+        peopleService.update(id, personMapper.convertToPerson(personDTO));
 
-        return peopleService.update(id, convertToPerson(personDTO));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") int id) {
-
         peopleService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
     @PostMapping("/{id}/orders")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<HttpStatus> createOrder (@PathVariable("id") int person_id){
         orderService.create(person_id);
         return ResponseEntity.ok(HttpStatus.OK);
 
     }
 
-    private Person convertToPerson(PersonDTO personDTO){
-        return modelMapper.map(personDTO, Person.class);
-    }
-    private PersonDTO convertToPersonDTO(Person person){
-        return modelMapper.map(person, PersonDTO.class);
-    }
 }
